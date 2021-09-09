@@ -58,6 +58,7 @@ def menu():
         print("Use the buttons on the Pi to make and submit your guess!")
         print("Press and hold the guess button to cancel your game")
         rand_value = generate_number()
+        end_of_game = False
         attempts = 0
         user_guess = 1
         pwmLed.start(0)
@@ -245,7 +246,7 @@ def btn_guess_pressed(channel):
         percent = float(rand_value)/user_guess*100
 
     accuracy_leds(percent)
-    trigger_buzzer(
+    trigger_buzzer()
 
     # if it's an exact guess:
     # - Disable LEDs and Buzzer
@@ -267,6 +268,11 @@ def btn_guess_pressed(channel):
         save_scores(newScore)
 
         end_of_game = True
+
+    if(end_of_game == True):
+        GPIO.output(LED_value, GPIO.LOW)
+        pwmLed.stop()
+        pwmBuzzer.stop()
     pass
 
 
@@ -301,7 +307,6 @@ if __name__ == "__main__":
         welcome()
         eeprom.populate_mock_scores()
         while True:
-            end_of_game = False
             menu()
             pass
     except Exception as e:
